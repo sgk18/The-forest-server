@@ -1,0 +1,109 @@
+{
+  "server-ip": {
+    "env": "SERVER_IP",
+    "default": "0.0.0.0",
+    "description": "Internal IP binding for The Forest server container"
+  },
+  "server-steam-port": {
+    "env": "FOREST_STEAM_PORT",
+    "default": 8766,
+    "protocol": "udp",
+    "description": "Steam communication port"
+  },
+  "server-game-port": {
+    "env": "FOREST_GAME_PORT",
+    "default": 27015,
+    "protocol": "udp",
+    "description": "The Forest game communication port"
+  },
+  "server-query-port": {
+    "env": "FOREST_QUERY_PORT",
+    "default": 27016,
+    "protocol": "udp",
+    "description": "Steam query communication port"
+  },
+  "server-name": {
+    "env": "SERVER_NAME",
+    "default": "The Forest Dedicated Server [Azure]",
+    "description": "Display name of server in multiplayer list"
+  },
+  "server-players": {
+    "env": "SERVER_PLAYERS",
+    "default": 8,
+    "allowed": [1, 2, 3, 4, 5, 6, 7, 8],
+    "description": "Maximum player limit (max 8 supported by game engine)"
+  },
+  "enable-vac": {
+    "env": "ENABLE_VAC",
+    "default": "off",
+    "allowed": ["on", "off"],
+    "description": "Valve Anti-Cheat toggle"
+  },
+  "server-password": {
+    "env": "SERVER_PASSWORD",
+    "default": "ForestPlay2026!",
+    "description": "Join password for game players"
+  },
+  "admin-password": {
+    "env": "ADMIN_PASSWORD",
+    "default": "ForestAdmin2026!Secure",
+    "description": "Administrator password for moderation commands"
+  },
+  "server-steam-account": {
+    "env": "SERVER_STEAM_ACCOUNT_TOKEN",
+    "description": "Steam Game Server Login Token (GSLT) from steamcommunity.com/dev/managegameservers (AppID 242760)"
+  },
+  "autosave-interval": {
+    "env": "SERVER_AUTOSAVE_INTERVAL",
+    "default": 30,
+    "description": "World auto-save interval in minutes (min 15)"
+  },
+  "difficulty": {
+    "env": "DIFFICULTY",
+    "default": "Normal",
+    "allowed": ["Peaceful", "Normal", "Hard"],
+    "description": "Game difficulty mode"
+  },
+  "init-type": {
+    "env": "INIT_TYPE",
+    "default": "Continue",
+    "allowed": ["New", "Continue"],
+    "description": "Start new game world or continue from existing save"
+  },
+  "slot": {
+    "env": "SAVE_SLOT",
+    "default": 1,
+    "allowed": [1, 2, 3, 4, 5],
+    "description": "Save game slot index"
+  },
+  "tree-regrow": {
+    "env": "TREE_REGROW_MODE",
+    "default": "on",
+    "allowed": ["on", "off"],
+    "description": "Regrow 10% of cut-down trees on sleep"
+  },
+  "allow-building-destruction": {
+    "env": "ALLOW_BUILDING_DESTRUCTION",
+    "default": "on",
+    "allowed": ["on", "off"],
+    "description": "Allows enemies to destroy player structures"
+  },
+  "vegan-mode": {
+    "env": "VEGAN_MODE",
+    "default": "off",
+    "allowed": ["on", "off"],
+    "description": "Remove all enemy mutants and cannibals"
+  },
+  "vegetarian-mode": {
+    "env": "VEGETARIAN_MODE",
+    "default": "off",
+    "allowed": ["on", "off"],
+    "description": "Mutants and cannibals only spawn at night"
+  },
+  "allow-cheats": {
+    "env": "ALLOW_CHEATS",
+    "default": "off",
+    "allowed": ["on", "off"],
+    "description": "Allows client debug console access"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "./forest-server-schema.json",
+  "generatedAt": "2026-10-20T18:38:00+05:30",
+  "server": {
+    "title": "The Forest Dedicated Server",
+    "version": "1.12",
+    "engine": "Unity / Wine 9.0 on Ubuntu 22.04 LTS",
+    "steamAppIdGame": 242760,
+    "steamAppIdServer": 556450,
+    "serverIP": "0.0.0.0",
+    "serverName": "The Forest Dedicated Server [Azure]",
+    "serverPlayers": 8,
+    "difficulty": "Normal",
+    "initType": "Continue",
+    "slot": 1,
+    "serverAutoSaveInterval": 30,
+    "enableVAC": "off",
+    "serverPassword": "ForestPlay2026!",
+    "serverPasswordAdmin": "ForestAdmin2026!Secure",
+    "serverSteamAccount": "A948C7B036D81F274E82A1B49C5D02E3",
+    "serverContact": "suryachalam18@gmail.com",
+    "treeRegrowMode": "on",
+    "allowBuildingDestruction": "on",
+    "veganMode": "off",
+    "vegetarianMode": "off",
+    "resetHolesMode": "off",
+    "allowEnemiesCreativeMode": "off",
+    "allowCheats": "off",
+    "realisticPlayerDamage": "off",
+    "targetFpsIdle": 0,
+    "targetFpsActive": 0,
+    "showLogs": "off"
+  },
+  "networking": {
+    "serverGamePort": {
+      "port": 27015,
+      "protocol": "UDP",
+      "description": "Direct Game Traffic (The Forest gameplay synchronization)"
+    },
+    "serverQueryPort": {
+      "port": 27016,
+      "protocol": "UDP",
+      "description": "Steam Master Server & A2S Server Browser Query"
+    },
+    "serverSteamPort": {
+      "port": 8766,
+      "protocol": "UDP",
+      "description": "Steam Client Communication & Peer Relays"
+    },
+    "dashboardPort": {
+      "port": 5050,
+      "protocol": "TCP",
+      "description": "Server Insights & Power Control Management Web Console"
+    },
+    "sshPort": {
+      "port": 22,
+      "protocol": "TCP",
+      "description": "Secure Shell Host Administration"
+    }
+  },
+  "azureInfrastructure": {
+    "subscriptionName": "Azure for Students",
+    "subscriptionId": "0d3d4048-6e60-4719-8f43-30facb9158a6",
+    "tenantId": "06d78c90-0e5c-44b3-a8fd-6459314b6aa9",
+    "resourceGroup": "rg-theforest-server",
+    "vmName": "theforest-vm",
+    "location": "centralindia",
+    "vmSize": "Standard_D2as_v4",
+    "specs": {
+      "vCpu": 2,
+      "ramGb": 8.0,
+      "processor": "AMD EPYC 7763 64-Core Processor",
+      "os": "Ubuntu 22.04 LTS (Jammy Jellyfish)",
+      "storageType": "Premium SSD LRS (30 GB)"
+    },
+    "networkSecurityGroup": "theforest-vmNSG",
+    "powerState": "VM running",
+    "containerName": "the-forest-dedicated-server",
+    "dockerImage": "jammsen/the-forest-dedicated-server:latest"
+  },
+  "connect": {
+    "multiplayerMethod": "Internet Server Browser",
+    "searchFilter": "The Forest Dedicated Server [Azure]",
+    "steamDirectConnectProtocol": "steam://connect/<PUBLIC_IP>:27015",
+    "steamQueryProbe": "<PUBLIC_IP>:27016",
+    "passwordProtected": true,
+    "joinPassword": "ForestPlay2026!"
+  }
+}

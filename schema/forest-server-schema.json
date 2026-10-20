@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TheForestDedicatedServerConfig",
+  "description": "Comprehensive schema and insights definition for The Forest Dedicated Server deployed on Azure with Docker and Wine.",
+  "type": "object",
+  "required": [
+    "serverIP",
+    "serverSteamPort",
+    "serverGamePort",
+    "serverQueryPort",
+    "serverName",
+    "serverPlayers",
+    "serverPasswordAdmin",
+    "serverPassword",
+    "difficulty",
+    "initType",
+    "slot"
+  ],
+  "properties": {
+    "serverIP": {
+      "type": "string",
+      "description": "Internal IP address for the game server process. Typically 0.0.0.0 in Docker.",
+      "default": "0.0.0.0",
+      "env": "SERVER_IP"
+    },
+    "serverSteamPort": {
+      "type": "integer",
+      "description": "UDP port used by Steam communication services.",
+      "default": 8766,
+      "minimum": 1024,
+      "maximum": 65535,
+      "protocol": "UDP",
+      "env": "FOREST_STEAM_PORT"
+    },
+    "serverGamePort": {
+      "type": "integer",
+      "description": "UDP port used for direct player gameplay communication.",
+      "default": 27015,
+      "minimum": 1024,
+      "maximum": 65535,
+      "protocol": "UDP",
+      "env": "FOREST_GAME_PORT"
+    },
+    "serverQueryPort": {
+      "type": "integer",
+      "description": "UDP port used by Steam Server Browser and queries to retrieve player count and ping.",
+      "default": 27016,
+      "minimum": 1024,
+      "maximum": 65535,
+      "protocol": "UDP",
+      "env": "FOREST_QUERY_PORT"
+    },
+    "serverName": {
+      "type": "string",
+      "description": "Display name of the server visible in The Forest multiplayer lobby and Steam master server browser.",
+      "default": "The Forest Dedicated Server [Azure]",
+      "minLength": 3,
+      "maxLength": 64,
+      "env": "SERVER_NAME"
+    },
+    "serverPlayers": {
+      "type": "integer",
+      "description": "Maximum number of simultaneous players supported by The Forest dedicated server engine.",
+      "default": 8,
+      "minimum": 1,
+      "maximum": 8,
+      "env": "SERVER_PLAYERS"
+    },
+    "enableVAC": {
+      "type": "string",
+      "description": "Enable Valve Anti-Cheat (VAC) protection.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "ENABLE_VAC"
+    },
+    "serverPassword": {
+      "type": "string",
+      "description": "Join password required for players to connect. Leave blank for an open public server.",
+      "default": "ForestPlay2026!",
+      "env": "SERVER_PASSWORD"
+    },
+    "serverPasswordAdmin": {
+      "type": "string",
+      "description": "Administrative password used to execute in-game console commands and server moderation.",
+      "default": "ForestAdmin2026!Secure",
+      "env": "ADMIN_PASSWORD"
+    },
+    "serverSteamAccount": {
+      "type": "string",
+      "description": "Steam Game Server Login Token (GSLT) registered at https://steamcommunity.com/dev/managegameservers with AppID 242760.",
+      "pattern": "^[A-Fa-f0-9]{32}$|^$",
+      "env": "SERVER_STEAM_ACCOUNT_TOKEN"
+    },
+    "serverAutoSaveInterval": {
+      "type": "integer",
+      "description": "Interval between automatic game world saves in minutes (minimum 15, default 30).",
+      "default": 30,
+      "minimum": 15,
+      "maximum": 120,
+      "env": "SERVER_AUTOSAVE_INTERVAL"
+    },
+    "difficulty": {
+      "type": "string",
+      "description": "Game difficulty setting affecting survival, enemy health, and hunger/thirst depletion.",
+      "enum": ["Peaceful", "Normal", "Hard"],
+      "default": "Normal",
+      "env": "DIFFICULTY"
+    },
+    "initType": {
+      "type": "string",
+      "description": "Whether the server starts a fresh game world or continues from existing save slot.",
+      "enum": ["New", "Continue"],
+      "default": "Continue",
+      "env": "INIT_TYPE"
+    },
+    "slot": {
+      "type": "integer",
+      "description": "The active save game slot on the server disk (1 through 5).",
+      "enum": [1, 2, 3, 4, 5],
+      "default": 1,
+      "env": "SAVE_SLOT"
+    },
+    "showLogs": {
+      "type": "string",
+      "description": "Show event logs on standard output.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "SHOW_LOGS"
+    },
+    "serverContact": {
+      "type": "string",
+      "description": "Contact email address of the server administrator.",
+      "format": "email",
+      "default": "suryachalam18@gmail.com",
+      "env": "SERVER_CONTACT"
+    },
+    "veganMode": {
+      "type": "string",
+      "description": "Disables all cannibals and mutants for a pure building and survival experience.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "VEGAN_MODE"
+    },
+    "vegetarianMode": {
+      "type": "string",
+      "description": "Cannibals and mutants spawn only during the night; daytime is peaceful.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "VEGETARIAN_MODE"
+    },
+    "resetHolesMode": {
+      "type": "string",
+      "description": "Resets structural cutouts/holes when reloading the save game.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "RESET_HOLES_MODE"
+    },
+    "treeRegrowMode": {
+      "type": "string",
+      "description": "Regrows 10% of cut-down tree stumps every time players sleep.",
+      "enum": ["on", "off"],
+      "default": "on",
+      "env": "TREE_REGROW_MODE"
+    },
+    "allowBuildingDestruction": {
+      "type": "string",
+      "description": "Allows mutants and cannibals to damage and destroy player-built structures.",
+      "enum": ["on", "off"],
+      "default": "on",
+      "env": "ALLOW_BUILDING_DESTRUCTION"
+    },
+    "allowEnemiesCreativeMode": {
+      "type": "string",
+      "description": "Enables enemies even if running in creative game mode.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "ALLOW_ENEMIES_CREATIVE"
+    },
+    "allowCheats": {
+      "type": "string",
+      "description": "Allows clients to use the built-in developer debug console.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "ALLOW_CHEATS"
+    },
+    "realisticPlayerDamage": {
+      "type": "string",
+      "description": "Enables full unscaled friendly-fire weapon damage in PvP encounters.",
+      "enum": ["on", "off"],
+      "default": "off",
+      "env": "REALISTIC_PLAYER_DAMAGE"
+    },
+    "targetFpsIdle": {
+      "type": "integer",
+      "description": "Target server tickrate/FPS when no players are connected (0 = adaptive).",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 120,
+      "env": "TARGET_FPS_IDLE"
+    },
+    "targetFpsActive": {
+      "type": "integer",
+      "description": "Target server tickrate/FPS when at least one player is active (0 = adaptive).",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 144,
+      "env": "TARGET_FPS_ACTIVE"
+    },
+    "azureInsights": {
+      "type": "object",
+      "description": "Cloud infrastructure metadata and real telemetry schema.",
+      "properties": {
+        "subscriptionId": { "type": "string", "example": "0d3d4048-6e60-4719-8f43-30facb9158a6" },
+        "resourceGroup": { "type": "string", "example": "rg-theforest-server" },
+        "vmName": { "type": "string", "example": "theforest-vm" },
+        "location": { "type": "string", "example": "centralindia" },
+        "vmSize": { "type": "string", "example": "Standard_D2as_v4" },
+        "vCpu": { "type": "integer", "example": 2 },
+        "memoryGb": { "type": "number", "example": 8.0 },
+        "osDiskGb": { "type": "integer", "example": 30 },
+        "powerState": { "type": "string", "enum": ["VM running", "VM stopped", "VM deallocated"] },
+        "publicIp": { "type": "string", "format": "ipv4" },
+        "steamAppIdGame": { "type": "integer", "default": 242760 },
+        "steamAppIdServer": { "type": "integer", "default": 556450 }
+      }
+    }
+  }
+}

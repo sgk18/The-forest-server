@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Forest Dedicated Server | Azure Insights & Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0d0f;
+      --bg-card: rgba(18, 25, 23, 0.75);
+      --bg-card-hover: rgba(24, 34, 31, 0.85);
+      --border-color: rgba(46, 204, 113, 0.18);
+      --border-accent: rgba(46, 204, 113, 0.5);
+      --forest-green: #2ecc71;
+      --forest-glow: rgba(46, 204, 113, 0.35);
+      --forest-dark: #1e824c;
+      --amber: #f39c12;
+      --crimson: #e74c3c;
+      --azure-blue: #0078d4;
+      --text-main: #f0f4f2;
+      --text-muted: #8ca397;
+      --font-ui: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(46, 204, 113, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(0, 120, 212, 0.08) 0%, transparent 40%),
+        linear-gradient(180deg, #070a08 0%, #0d1411 100%);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #27ae60, #16a085);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 0 20px var(--forest-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #ffffff, #a3e4d7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid var(--forest-green);
+      color: var(--forest-green);
+    }
+
+    .badge-status.offline {
+      background: rgba(231, 76, 60, 0.15);
+      border-color: var(--crimson);
+      color: var(--crimson);
+    }
+
+    .badge-status.starting {
+      background: rgba(243, 156, 18, 0.15);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: currentColor;
+      box-shadow: 0 0 8px currentColor;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+    }
+
+    /* Connect Box */
+    .connect-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+
+    .connect-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .connect-value {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: #a3e4d7;
+    }
+
+    .btn-copy {
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid var(--border-color);
+      color: var(--forest-green);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: var(--forest-green);
+      color: #000;
+    }
+
+    /* Actions */
+    .action-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #000;
+      box-shadow: 0 4px 14px rgba(46, 204, 113, 0.25);
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); }
+
+    .btn-stop {
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.4);
+      color: #ff7675;
+    }
+    .btn-stop:hover { background: #e74c3c; color: #fff; }
+
+    .btn-restart {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+    .btn-restart:hover { background: rgba(255, 255, 255, 0.16); }
+
+    /* Insights Specs List */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .spec-box {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .spec-key {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .spec-val {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* Instructions Section */
+    .instructions-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .step-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(46, 204, 113, 0.2);
+      border: 1px solid var(--forest-green);
+      color: var(--forest-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-text strong {
+      color: #fff;
+    }
+
+    .step-text p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+
+    /* Schema Explorer */
+    .schema-viewer {
+      background: #060907;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #a3e4d7;
+      max-height: 380px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #1e824c;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">🌲</div>
+        <div class="brand-text">
+          <h1>The Forest Server | Azure Console</h1>
+          <p>Real-time telemetry, configuration insights, and Azure power management</p>
+        </div>
+      </div>
+      <div>
+        <div id="statusBadge" class="badge-status">
+          <span class="status-dot"></span>
+          <span id="statusText">Checking...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Grid -->
+    <div class="grid">
+      <!-- Connection & Status Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📡 Server Connection</div>
+          <span style="font-size: 0.8rem; color: var(--forest-green); font-weight: 600;">ACTIVE PORTS</span>
+        </div>
+        <div class="connect-row">
+          <div>
+            <div class="connect-label">Server Display Name</div>
+            <div class="connect-value" id="srvName">The Forest Dedicated Server [Azure]</div>
+          </div>
+          <button class="btn-copy" onclick="copyText('srvName')">Copy</button>
+        </div>
+        <div class="connect-row">
+          <div>
+            <div class="connect-label">Public IP & Game Port</div>
+            <div class="connect-value" id="srvIpPort">Fetching...</div>
+          </div>
+          <button class="btn-copy" onclick="copyText('srvIpPort')">Copy</button>
+        </div>
+        <div class="connect-row">
+          <div>
+            <div class="connect-label">Steam Direct Connect Protocol</div>
+            <div class="connect-value" id="srvSteamLink" style="font-size: 0.8rem;">Fetching...</div>
+          </div>
+          <button class="btn-copy" onclick="copyText('srvSteamLink')">Copy</button>
+        </div>
+        <div class="connect-row">
+          <div>
+            <div class="connect-label">Server Join Password</div>
+            <div class="connect-value" id="srvPassword">ForestPlay2026!</div>
+          </div>
+          <button class="btn-copy" onclick="copyText('srvPassword')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Azure Cloud & VM Insights -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">☁️ Azure Cloud Infrastructure</div>
+          <span style="font-size: 0.8rem; color: #0078d4; font-weight: 600;">CENTRAL INDIA</span>
+        </div>
+        <div class="specs-grid">
+          <div class="spec-box">
+            <div class="spec-key">Azure VM Name</div>
+            <div class="spec-val" id="azVmName">theforest-vm</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Resource Group</div>
+            <div class="spec-val" id="azRg">rg-theforest-server</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">VM SKU Size</div>
+            <div class="spec-val" id="azVmSize">Standard_D2as_v4</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">vCPU / RAM</div>
+            <div class="spec-val">2 vCPUs / 8.0 GB</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Game Port (UDP)</div>
+            <div class="spec-val">27015</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Steam Query Port</div>
+            <div class="spec-val">27016</div>
+          </div>
+        </div>
+
+        <!-- Power Actions -->
+        <div class="action-group">
+          <button class="btn btn-start" onclick="sendAction('start')">▶ Start VM</button>
+          <button class="btn btn-restart" onclick="sendAction('restart')">↺ Restart</button>
+          <button class="btn btn-stop" onclick="sendAction('stop')">⏹ Stop VM</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Grid: Game Insights & Schema Parameters -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎮 Gameplay & World Insights</div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">REAL CONFIG</span>
+        </div>
+        <div class="specs-grid">
+          <div class="spec-box">
+            <div class="spec-key">Difficulty</div>
+            <div class="spec-val" id="gDifficulty">Normal</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Max Players</div>
+            <div class="spec-val" id="gMaxPlayers">8 Players</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Active Save Slot</div>
+            <div class="spec-val" id="gSlot">Slot 1</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Auto-Save Interval</div>
+            <div class="spec-val">Every 30 Mins</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Tree Regrowth</div>
+            <div class="spec-val" style="color: #2ecc71;">Enabled (10%)</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">Building Damage</div>
+            <div class="spec-val" style="color: #f39c12;">Enabled</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick How to Connect Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕹️ How to Connect in Game</div>
+        </div>
+        <div class="step-list" style="margin-top: 0;">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>Launch The Forest</strong>
+              <p>Start The Forest on PC via Steam.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>Multiplayer &rarr; Dedicated (Internet)</strong>
+              <p>In the main menu, click Multiplayer &rarr; Join Game &rarr; Dedicated (Internet).</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Filter by Server Name</strong>
+              <p>Type <code style="color: #2ecc71;">The Forest Dedicated Server [Azure]</code> into the search box.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <strong>Enter Password & Survive</strong>
+              <p>Click Join, enter <code style="color: #a3e4d7;">ForestPlay2026!</code>, and enter the peninsula!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schema Explorer Section -->
+    <div class="instructions-card">
+      <div class="card-header">
+        <div class="card-title">🔍 Real Schema & Insights Data Inspector</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-copy" onclick="loadSchemaView('insights')">Live Insights</button>
+          <button class="btn-copy" onclick="loadSchemaView('schema')">JSON Schema</button>
+          <button class="btn-copy" onclick="loadSchemaView('props')">Properties Map</button>
+        </div>
+      </div>
+      <div class="schema-viewer" id="schemaViewer">Loading server schema and insights...</div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Action dispatched!</div>
+
+  <script>
+    let cachedInsights = null;
+
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        const badge = document.getElementById('statusBadge');
+        const statusText = document.getElementById('statusText');
+        
+        if (data.status === 'online') {
+          badge.className = 'badge-status';
+          statusText.textContent = 'ONLINE';
+        } else {
+          badge.className = 'badge-status offline';
+          statusText.textContent = data.vm.powerState.toUpperCase() || 'OFFLINE';
+        }
+
+        document.getElementById('srvName').textContent = data.server.name;
+        document.getElementById('srvIpPort').textContent = `${data.vm.publicIp}:${data.server.gamePort}`;
+        document.getElementById('srvSteamLink').textContent = data.connect.connectString || `steam://connect/${data.vm.publicIp}:${data.server.gamePort}`;
+        document.getElementById('azVmName').textContent = data.vm.vmName;
+        document.getElementById('azRg').textContent = data.vm.resourceGroup;
+        document.getElementById('azVmSize').textContent = data.vm.vmSize;
+        document.getElementById('gDifficulty').textContent = data.server.difficulty;
+        document.getElementById('gMaxPlayers').textContent = `${data.server.maxPlayers} Players`;
+        document.getElementById('gSlot').textContent = `Slot ${data.server.saveSlot}`;
+      } catch (err) {
+        console.error('Status fetch failed', err);
+      }
+    }
+
+    async function loadSchemaView(type) {
+      const viewer = document.getElementById('schemaViewer');
+      if (!cachedInsights) {
+        try {
+          const res = await fetch('/api/insights');
+          cachedInsights = await res.json();
+        } catch (e) {
+          viewer.textContent = 'Failed to load schema.';
+          return;
+        }
+      }
+
+      if (type === 'insights') {
+        viewer.textContent = JSON.stringify(cachedInsights.insights, null, 2);
+      } else if (type === 'schema') {
+        viewer.textContent = JSON.stringify(cachedInsights.schema, null, 2);
+      } else if (type === 'props') {
+        viewer.textContent = JSON.stringify(cachedInsights.propertyDefinitions, null, 2);
+      }
+    }
+
+    async function sendAction(action) {
+      showToast(`Dispatching Azure VM ${action.toUpperCase()} command...`);
+      try {
+        const res = await fetch('/api/control', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Success: ${data.message}`);
+          setTimeout(fetchStatus, 3000);
+        } else {
+          showToast(`Error: ${data.error}`);
+        }
+      } catch (e) {
+        showToast(`Request failed: ${e.message}`);
+      }
+    }
+
+    function copyText(elemId) {
+      const text = document.getElementById(elemId).textContent;
+      navigator.clipboard.writeText(text);
+      showToast(`Copied to clipboard: ${text}`);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    // Initial load
+    fetchStatus();
+    loadSchemaView('insights');
+    setInterval(fetchStatus, 10000);
+  </script>
+</body>
+</html>

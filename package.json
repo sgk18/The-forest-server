@@ -1,0 +1,23 @@
+{
+  "name": "the-forest-azure-server",
+  "version": "1.0.0",
+  "description": "The Forest Dedicated Server with Azure deployment automation and insights dashboard",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "deploy:azure": "powershell -ExecutionPolicy Bypass -File ./deploy_azure.ps1",
+    "vm:start": "powershell -ExecutionPolicy Bypass -File ./start_server.ps1",
+    "vm:stop": "powershell -ExecutionPolicy Bypass -File ./stop_server.ps1",
+    "vm:restart": "powershell -ExecutionPolicy Bypass -File ./restart_server.ps1"
+  },
+  "keywords": [
+    "the-forest",
+    "dedicated-server",
+    "azure",
+    "docker",
+    "wine",
+    "gameserver"
+  ],
+  "author": "sgk18",
+  "license": "MIT"
+}
