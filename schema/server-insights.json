@@ -75,14 +75,15 @@
     },
     "networkSecurityGroup": "theforest-vmNSG",
     "powerState": "VM running",
+    "publicIp": "20.219.163.1",
     "containerName": "the-forest-dedicated-server",
     "dockerImage": "jammsen/the-forest-dedicated-server:latest"
   },
   "connect": {
     "multiplayerMethod": "Internet Server Browser",
     "searchFilter": "The Forest Dedicated Server [Azure]",
-    "steamDirectConnectProtocol": "steam://connect/<PUBLIC_IP>:27015",
-    "steamQueryProbe": "<PUBLIC_IP>:27016",
+    "steamDirectConnectProtocol": "steam://connect/20.219.163.1:27015",
+    "steamQueryProbe": "20.219.163.1:27016",
     "passwordProtected": true,
     "joinPassword": "ForestPlay2026!"
   }

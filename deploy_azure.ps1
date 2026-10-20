@@ -78,13 +78,16 @@ az group create --name $ResourceGroupName --location $Location -o table
 
 # 4. Create Virtual Machine
 Write-Host "`n[Step 3/7] Provisioning Azure VM '$VmName' (Size: $VmSize, Location: $Location)..." -ForegroundColor Cyan
+$sshKeyPath = "$env:USERPROFILE\.ssh\azure_id_rsa.pub"
+$sshArg = if (Test-Path $sshKeyPath) { "--ssh-key-values `"$sshKeyPath`"" } else { "--generate-ssh-keys" }
+
 $vmJson = az vm create `
     --resource-group $ResourceGroupName `
     --name $VmName `
     --image Ubuntu2204 `
     --size $VmSize `
     --admin-username $AdminUsername `
-    --generate-ssh-keys `
+    --ssh-key-values "$sshKeyPath" `
     --public-ip-sku Standard `
     -o json
 
